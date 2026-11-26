@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // pooled — website er jonno
+  directUrl = env("DIRECT_URL")   // direct — table banano (db push / migrate) er jonno
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+// Landing page + site er sob customizable setting ekta JSON e thake
+model Setting {
+  id        Int      @id @default(1)
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id         Int         @id @default(autoincrement())
+  name       String
+  slug       String      @unique
+  shortDesc  String?
+  description String?    @db.Text
+  price      Int
+  salePrice  Int?
+  stock      Int         @default(0)
+  sku        String?
+  images     String[]
+  isActive   Boolean     @default(true)
+  isFeatured Boolean     @default(false)
+  freeDelivery Boolean   @default(false) // ei product thakle delivery free
+  sortOrder  Int         @default(0)
+  metaTitle  String?
+  metaDesc   String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  comboItems ComboItem[]
+  orderItems OrderItem[]
+
+  @@index([isActive, sortOrder])
+}
+
+model Combo {
+  id           Int         @id @default(autoincrement())
+  name         String
+  slug         String      @unique
+  description  String?     @db.Text
+  image        String?
+  price        Int
+  regularPrice Int?
+  isActive     Boolean     @default(true)
+  freeDelivery Boolean     @default(false) // ei combo thakle delivery free
+  sortOrder    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        ComboItem[]
+  orderItems   OrderItem[]
+}
+
+model ComboItem {
+  id        Int     @id @default(autoincrement())
+  comboId   Int
+  productId Int
+  quantity  Int     @default(1)
+  combo     Combo   @relation(fields: [comboId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  orderNo        String      @unique
+  customerName   String
+  phone          String
+  address        String
+  area           String
+  note           String?
+  subtotal       Int
+  deliveryCharge Int
+  discount       Int         @default(0)
+  total          Int
+  status         OrderStatus @default(PENDING)
+  adminNote      String?
+  ip             String?
+  userAgent      String?
+  sourceUrl      String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+
+  @@index([status])
+  @@index([phone])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int?
+  comboId   Int?
+  name      String
+  image     String?
+  price     Int
+  quantity  Int
+  total     Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  combo     Combo?   @relation(fields: [comboId], references: [id], onDelete: SetNull)
+}
+
+// Upload kora chobi database ei thake — Vercel/je kono hosting e deploy korleo harabe na
+model Media {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  mime      String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+}

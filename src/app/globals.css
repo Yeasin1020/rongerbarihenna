@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --c-primary: 38 45 71; /* navy */
+  --c-accent: 148 100 44; /* bronze */
+  --c-highlight: 238 189 122; /* gold */
+  --c-bg: 241 240 245; /* halka */
+  --c-text: 23 27 44;
+  --font-display: var(--f-tiro);
+  --font-body: var(--f-anek);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-white text-ink;
+  font-feature-settings: 'kern';
+  text-rendering: optimizeLegibility;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--c-highlight));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer components {
+  /* ---------- Website ---------- */
+  .h-display {
+    @apply font-display leading-[1.15] tracking-[-0.01em];
+  }
+  .h-section {
+    @apply font-display text-[1.9rem] leading-[1.2] text-leaf md:text-[2.6rem];
+  }
+  .lead {
+    @apply mt-3 max-w-[38rem] text-[1.05rem] leading-[1.75] text-ink/70;
+  }
+
+  .btn {
+    @apply inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-[14px] px-7 text-[1.05rem] font-semibold transition active:translate-y-px disabled:opacity-60;
+  }
+  .btn-haldi {
+    @apply btn bg-haldi text-ink shadow-[0_2px_0_0_rgb(var(--c-text)/0.85)] hover:brightness-105;
+  }
+  .btn-leaf {
+    @apply btn bg-leaf text-white hover:bg-leaf/90;
+  }
+  .btn-ghost {
+    @apply btn border border-leaf/25 text-leaf hover:border-leaf hover:bg-leaf/5;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-[1rem] outline-none transition placeholder:text-ink/35 focus:border-leaf focus:ring-4 focus:ring-leaf/10;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  /* mehedi-r dotted border (hero arch, order receipt) */
+  .dots-x {
+    background-image: radial-gradient(circle, rgb(var(--c-primary) / 0.35) 1.2px, transparent 1.6px);
+    background-size: 10px 6px;
+    background-repeat: repeat-x;
+    background-position: center;
+    height: 6px;
+  }
+
+  /* ---------- Admin ---------- */
+  .a-input {
+    @apply w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-[#262d47] focus:ring-2 focus:ring-[#262d47]/15;
+  }
+  .a-label {
+    @apply mb-1.5 block text-[13px] font-medium text-stone-600;
+  }
+  .a-card {
+    @apply rounded-xl border border-stone-200 bg-white p-4 md:p-6;
+  }
+  .a-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-[#262d47] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1d2338] disabled:opacity-50;
+  }
+  .a-btn-light {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-800 transition hover:bg-stone-50 disabled:opacity-50;
+  }
+  .a-btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 disabled:opacity-50;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Sonali patar animation — shudhu opacity (SVG transform nosto kore na) */
+@keyframes leaf-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
